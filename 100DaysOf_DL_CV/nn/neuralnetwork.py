@@ -1,4 +1,5 @@
 import numpy as np 
+import matplotlib.pyplot as plt
 
 class NeuralNetwork:
     def __init__(self, layers, alpha=0.1):
@@ -23,8 +24,8 @@ class NeuralNetwork:
             self.W.append(w / np.sqrt(layers[i]))
             # the last two layers are a special case where the input
             # connections need a bias term but the output does not
-            w = np.random.randn(layers[-2]+1, layers[-1])
-            self.W.append(w / np.sqrt(layers[-2]))
+        w = np.random.randn(layers[-2]+1, layers[-1])
+        self.W.append(w / np.sqrt(layers[-2]))
 
     def __repr__(self):
         #construct and return a string that represents the network
@@ -48,20 +49,31 @@ class NeuralNetwork:
         # matrix -- this little trick allows us to treat the bias
         # #as a trainable parameter within the weight matrix
         X = np.c_[X, np.ones((X.shape[0]))]
-
+        losses = []
         #loop over the desired number of epochs
         for epoch in np.arange(0, epochs):
             #loop over each individual data point and train
             #network on it
             for (x, target) in zip(X,y):
                 self.fit_partial(x, target)
-
+            loss = self.calculate_loss(X, y)
+            losses.append(loss)
             #check to see if we should display a training update
             if epoch==0 or (epoch + 1) % displayUpdate == 0:
-                loss = self.calculate_loss(X, y)
+                #loss = self.calculate_loss(X, y)
+                #losses.append(loss)
                 print("[INFO] epoch = {}, loss = {:.7f}".format(
                     epoch + 1, loss
-                ))  
+                ))
+        print(len(losses))
+        plt.style.use("ggplot")
+        plt.figure()
+        plt.plot(np.arange(0, epoch+1), losses)
+        plt.title("Training loss")
+        plt.xlabel("Epoch #")
+        plt.ylabel("loss")
+        plt.show()
+ 
     def fit_partial(self, x, y):
         #construct a list of output activations for each layer
         #as our data points flow through the network;
@@ -123,14 +135,13 @@ class NeuralNetwork:
         return p
 
     def calculate_loss(self, X, targets):
+        #X = np.c_[X, np.ones((X.shape[0]))]
         targets = np.atleast_2d(targets)
         predictions = self.predict(X, addBias=False)
+        #losses = []
         loss = 0.5 * np.sum(predictions - targets)**2
-
+        #losses.append(loss)
         return loss
-
-
-
 
 
     
