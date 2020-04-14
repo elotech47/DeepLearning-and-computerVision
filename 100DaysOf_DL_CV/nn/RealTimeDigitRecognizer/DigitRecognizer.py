@@ -25,7 +25,7 @@ print("[INFO] training network...")
 #0-9.
 nn = NeuralNetwork([trainX.shape[1], 32, 16, 10])
 print("[INFO] {}".format(nn))
-nn.fit(trainX, trainY, epochs=2000)
+nn.fit(trainX, trainY, epochs=10)
 
 #Evaluating model on testing set
 print("[INFO] evaluating network...")
